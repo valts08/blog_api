@@ -77,4 +77,18 @@ app.post('/api/blog', (req, res, next) => {
     console.log('POST new blog')
 })
 
-app.listen(3000, 'localhost', () => console.log('connected'))
+app.delete('/api/blog/:id', (req, res, next) => {
+    const blogId = parseInt(req.params.id)
+    const deleteBlogIndex = dummy.findIndex(blog => blog.blog_id === blogId)
+
+    if (deleteBlogIndex == -1) {
+        res.send({message:"No blog with that index found"})
+    }
+
+    const deletedBlog = dummy.splice(deleteBlogIndex, 1)
+
+    res.send({deletedBlog, message: "Blog deleted successfully"})
+    console.log('DELETE blog')
+})
+
+app.listen(3000, () => console.log('connected'))
