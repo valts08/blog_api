@@ -1,4 +1,7 @@
 const express = require('express')
+const mongoose = require('mongoose')
+const { Blog } = require('./schemas/blog')
+const db = `mongodb+srv://valtspilans_db_user:${process.env.MONGODB_ADMIN_PASSWORD}@cluster0.comypao.mongodb.net/?appName=Cluster0`
 const app = express()
 
 const dummy = [{
@@ -91,4 +94,12 @@ app.delete('/api/blog/:id', (req, res, next) => {
     console.log('DELETE blog')
 })
 
-app.listen(3000, () => console.log('connected'))
+app.listen(3000, async () => {
+    await mongoose.connect(db)
+    .then(() => {
+        console.log('connected to mongoDB')
+    })
+    .catch((e) => {
+        console.log("couldn't connect to mongoDB", e)
+    })
+})
