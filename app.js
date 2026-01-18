@@ -37,18 +37,18 @@ const dummy = [{
 app.use(express.json())
 
 // get blogs by user id
-app.get('/api/blogs/user/:id', (req, res, next) => {
-    const userId = parseInt(req.params.id)
-    const blogs = dummy.filter(user => user.user_id === userId)
+app.get('/api/blogs/user/:id', async (req, res, next) => {
+    const userId = req.params.id
+    const blogs = await Blog.find({ user_id: userId })
 
     res.send({blogs})
     console.log('GET user blogs')
 })
 
 // get blog by id
-app.get('/api/blog/:id', (req, res, next) => {
-    const blogId = parseInt(req.params.id)
-    const blog = dummy.find(blog => blog.blog_id === blogId)
+app.get('/api/blog/:id', async (req, res, next) => {
+    const blogId = req.params.id
+    const blog = await Blog.findById(blogId)
 
     res.send({blog})
     console.log('GET blog by id')
