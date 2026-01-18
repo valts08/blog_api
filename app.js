@@ -55,31 +55,33 @@ app.get('/api/blog/:id', (req, res, next) => {
 })
 
 // get all blogs
-app.get('/api/blogs', (req, res, next) => {
-    res.send({dummy})
+app.get('/api/blogs', async (req, res, next) => {
+    const blogs = await Blog.find({})
+    res.send({blogs})
     console.log('GET all blogs')
 })
 
 // post a blog / push new blog object to blog array
-app.post('/api/blog', (req, res, next) => {
+app.post('/api/blog', async (req, res, next) => {
     
     if (!req.body || !req.body.blog_title) throw new Error('no body received in request, or request missing an expected value')
 
-    if (dummy.find(blog => blog.blog_title === req.body.blog_title)) {
+    const titleExists = await Blog.find({ blog_title: req.body.blog_title })
+
+    if (titleExists.length) {
+        res.send({error: true, message: "a blog with this title already exists"})
         throw new Error('A blog with this title already exists')
     }
 
-    const last_index = dummy.length - 1
-    let newBlog = {
-        blog_id: dummy[last_index].blog_id + 1,
+    const blog = new Blog({
         blog_title: req.body.blog_title,
         user_id: req.body.user_id,
         time: Date.now()
-    }
+    })
 
-    dummy.push(newBlog)
+    await blog.save();
 
-    res.send({newBlog, message: "Blog entry added successfully"})
+    res.send({blog, message: "Blog entry added successfully"})
     console.log('POST new blog')
 })
 
