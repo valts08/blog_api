@@ -1,7 +1,10 @@
+require('dotenv').config()
 const express = require('express')
 const mongoose = require('mongoose')
 const { Blog } = require('./schemas/blog')
-const db = `mongodb+srv://valtspilans_db_user:${process.env.MONGODB_ADMIN_PASSWORD}@cluster0.comypao.mongodb.net/?appName=Cluster0`
+const host = 'localhost'
+const PORT = host === 'localhost' ? process.env.DEV_PORT_NUMBER : process.env.DEPLOY_PORT_NUMBER
+const db = `mongodb+srv://valtspilans_db_user:${process.env.MONGODB_CONNECTION_PASSWORD}@cluster0.comypao.mongodb.net/?appName=Cluster0`
 const app = express()
 
 const dummy = [{
@@ -94,12 +97,13 @@ app.delete('/api/blog/:id', (req, res, next) => {
     console.log('DELETE blog')
 })
 
-app.listen(3000, async () => {
+// try to connect to mongoDB
+app.listen(PORT, async () => {
     await mongoose.connect(db)
     .then(() => {
         console.log('connected to mongoDB')
     })
     .catch((e) => {
-        console.log("couldn't connect to mongoDB", e)
+        console.error("couldn't connect to mongoDB", e)
     })
 })
