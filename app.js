@@ -7,32 +7,6 @@ const PORT = host === 'localhost' ? process.env.DEV_PORT_NUMBER : process.env.DE
 const db = `mongodb+srv://valtspilans_db_user:${process.env.MONGODB_CONNECTION_PASSWORD}@cluster0.comypao.mongodb.net/?appName=Cluster0`
 const app = express()
 
-const dummy = [{
-    blog_id: 1,
-    blog_title: "Lifestyle & Productivity",
-    user_id: 1,
-    time: Date.now()
-},{
-    blog_id: 2,
-    blog_title: "Travel & Adventure",
-    user_id: 1,
-    time: Date.now()
-},{
-    blog_id: 3,
-    blog_title: "Food & Cooking",
-    user_id: 1,
-    time: Date.now()
-},{
-    blog_id: 4,
-    blog_title: "Personal Growth",
-    user_id: 2,
-    time: Date.now()
-},{
-    blog_id: 5,
-    blog_title: "Technology & Future",
-    user_id: 2,
-    time: Date.now()
-}]
 
 app.use(express.json())
 
@@ -85,18 +59,19 @@ app.post('/api/blog', async (req, res, next) => {
     console.log('POST new blog')
 })
 
-app.delete('/api/blog/:id', (req, res, next) => {
-    const blogId = parseInt(req.params.id)
-    const deleteBlogIndex = dummy.findIndex(blog => blog.blog_id === blogId)
+app.delete('/api/blog/:id', async (req, res, next) => {
+    const blogId = req.params.id
+    const blogToFind = await Blog.findById(blogId)
 
-    if (deleteBlogIndex == -1) {
-        res.send({message:"No blog with that index found"})
+    if (blogToFind) {
+        const blog = await Blog.deleteOne({ _id: blogId})
+        // change it to where it returns the deleted blog data, not the default acknowledgement object
+        res.send({blog, message: "Blog entry deleted successfully"})
+        console.log('DELETE blog')
     }
 
-    const deletedBlog = dummy.splice(deleteBlogIndex, 1)
-
-    res.send({deletedBlog, message: "Blog deleted successfully"})
-    console.log('DELETE blog')
+    res.send({message: "Blog with this id doesn't exist"})
+    throw new Error('Blog with this id doesn\'t exist')
 })
 
 // try to connect to mongoDB
