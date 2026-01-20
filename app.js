@@ -29,22 +29,6 @@ app.get('/api/blogs/user/:id', async (req, res, next) => {
     console.log('GET user blogs')
 })
 
-// get blog by id
-app.get('/api/blog/:id', async (req, res, next) => {
-    const blogId = req.params.id
-    const blog = await Blog.findById(blogId)
-
-    res.send({blog})
-    console.log('GET blog by id')
-})
-
-// get all blogs
-app.get('/api/blogs', async (req, res, next) => {
-    const blogs = await Blog.find({})
-    res.send({blogs})
-    console.log('GET all blogs')
-})
-
 // post a blog / push new blog object to blog array
 app.post('/api/blog', async (req, res, next) => {
     
@@ -67,6 +51,22 @@ app.post('/api/blog', async (req, res, next) => {
 
     res.send({blog, message: "Blog entry added successfully"})
     console.log('POST new blog')
+})
+
+// get blog by id
+app.get('/api/blog/:id', async (req, res, next) => {
+    const blogId = req.params.id
+    const blog = await Blog.findById(blogId)
+
+    res.send({blog})
+    console.log('GET blog by id')
+})
+
+// get all blogs
+app.get('/api/blogs', async (req, res, next) => {
+    const blogs = await Blog.find({})
+    res.send({blogs})
+    console.log('GET all blogs')
 })
 
 app.delete('/api/blog/:id', async (req, res, next) => {
