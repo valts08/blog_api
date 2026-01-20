@@ -88,7 +88,7 @@ app.delete('/api/blog/:id', async (req, res, next) => {
 app.listen(PORT, '0.0.0.0', async () => {
     await mongoose.connect(db)
     .then(() => {
-        console.log('connected to mongoDB')
+        console.log(`connected to mongoDB, running on port ${PORT}`)
     })
     .catch((e) => {
         console.error("couldn't connect to mongoDB", e)
