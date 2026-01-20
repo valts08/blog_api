@@ -5,7 +5,7 @@ const mongoose = require('mongoose')
 const cors = require('cors')
 const helmet = require('helmet')
 const { Blog } = require('./schemas/blog')
-const PORT = process.env.DEPLOY_PORT_NUMBER
+const PORT = process.env.DEPLOY_PORT_NUMBER || 3000
 const db = process.env.MONGODB_URI
 
 
@@ -85,7 +85,7 @@ app.delete('/api/blog/:id', async (req, res, next) => {
 })
 
 // try to connect to mongoDB
-app.listen(PORT, async () => {
+app.listen(PORT, '0.0.0.0', async () => {
     await mongoose.connect(db)
     .then(() => {
         console.log('connected to mongoDB')
