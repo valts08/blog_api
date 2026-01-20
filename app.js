@@ -1,14 +1,24 @@
 require('dotenv').config()
 const express = require('express')
-const mongoose = require('mongoose')
-const { Blog } = require('./schemas/blog')
-const host = 'localhost'
-const PORT = host === 'localhost' ? process.env.DEV_PORT_NUMBER : process.env.DEPLOY_PORT_NUMBER
-const db = `mongodb+srv://valtspilans_db_user:${process.env.MONGODB_CONNECTION_PASSWORD}@cluster0.comypao.mongodb.net/?appName=Cluster0`
 const app = express()
+const mongoose = require('mongoose')
+const cors = require('cors')
+const helmet = require('helmet')
+const { Blog } = require('./schemas/blog')
+const PORT = process.env.DEPLOY_PORT_NUMBER
+const db = process.env.MONGODB_URI
 
 
 app.use(express.json())
+
+app.use(helmet())
+
+// uncomment this when you've tested everything locally
+// app.use(cors({
+//     origin: 'https://valts08.github.io',
+//     methods: ['GET', 'POST', 'DELETE'],
+//     credentials: true
+// }))
 
 // get blogs by user id
 app.get('/api/blogs/user/:id', async (req, res, next) => {
