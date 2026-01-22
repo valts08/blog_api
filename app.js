@@ -11,7 +11,7 @@ const db = process.env.MONGODB_URI
 
 app.use(express.json())
 
-app.use(helmet())
+// app.use(helmet())
 
 // uncomment this when you've tested everything locally
 // app.use(cors({
