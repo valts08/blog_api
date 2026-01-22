@@ -11,14 +11,27 @@ const db = process.env.MONGODB_URI
 
 app.use(express.json())
 
-// app.use(helmet())
+app.use(helmet())
 
-// uncomment this when you've tested everything locally
-// app.use(cors({
-//     origin: 'https://valts08.github.io',
-//     methods: ['GET', 'POST', 'DELETE'],
-//     credentials: true
-// }))
+const whitelist = [
+    'http://valts08.github.io',
+    'http://localhost:*',
+]
+
+const corsOptions = {
+    origin: function (origin, callback) {
+    if (!origin || whitelist.includes(origin)) {
+      callback(null, true)
+    } else {
+      console.log('origin:', origin, 'not allowed')
+      callback(new Error('Not allowed by CORS'))
+    }
+  },
+    methods: ['GET', 'POST', 'DELETE'],
+    credentials: true
+}
+
+app.use(cors(corsOptions))
 
 // get blogs by user id
 app.get('/api/blogs/user/:id', async (req, res, next) => {
