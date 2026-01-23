@@ -15,16 +15,18 @@ app.use(helmet())
 
 const whitelist = [
     'http://valts08.github.io',
-    'http://localhost:*',
+    'http://localhost:5173',
+    'http://localhost:3000',
 ]
 
 const corsOptions = {
     origin: function (origin, callback) {
     if (!origin || whitelist.includes(origin)) {
-      callback(null, true)
+        console.log('origin:', origin, 'allowed')
+        callback(null, true)
     } else {
-      console.log('origin:', origin, 'not allowed')
-      callback(new Error('Not allowed by CORS'))
+        console.log('origin:', origin, 'not allowed')
+        callback(null, false)
     }
   },
     methods: ['GET', 'POST', 'DELETE'],
