@@ -1,6 +1,14 @@
 const express = require('express');
 const app = express();
 const { Blog } = require('../schemas/blog');
+const Joi = require('joi');
+
+const schema = Joi.object({
+    user_id: Joi.number().min(1).required(),
+    blog_title: Joi.string().min(10).required(),
+    blog_content: Joi.string().min(30).required(),
+    blog_preview: Joi.string().min(10).required(),
+});
 
 // get blogs by user id
 const get_blog_user_id = (async (req, res, next) => {
@@ -14,8 +22,17 @@ const get_blog_user_id = (async (req, res, next) => {
 // post a blog / push new blog object to blog array
 const post_blog = (async (req, res, next) => {
     
-    if (!req.body || !req.body.blog_title) throw new Error('no body received in request, or request missing an expected value')
+    if (!req.body) throw new Error('no body received in request')
 
+    // validating body content
+    const { error } = schema.validate(req.body)
+
+    if (error) {
+        console.log(error.details[0].message)
+        return res.send(error)
+    }
+
+    // check if the same title exists in our db
     const titleExists = await Blog.find({ blog_title: req.body.blog_title })
 
     if (titleExists.length) {
@@ -24,8 +41,10 @@ const post_blog = (async (req, res, next) => {
     }
 
     const blog = new Blog({
-        blog_title: req.body.blog_title,
         user_id: req.body.user_id,
+        blog_title: req.body.blog_title,
+        blog_content: req.body.blog_content,
+        blog_preview: req.body.blog_preview,
         time: Date.now()
     })
 
@@ -56,7 +75,7 @@ const delete_blog = (async (req, res, next) => {
     const blogToFind = await Blog.findById(blogId)
 
     if (blogToFind) {
-        const blog = await Blog.deleteOne({ _id: blogId})
+        const blog = await Blog.deleteOne({ _id: blogId })
         // change it to where it returns the deleted blog data, not the default acknowledgement object
         res.send({blog, message: "Blog entry deleted successfully"})
         console.log('DELETE blog')

@@ -7,6 +7,7 @@ const helmet = require('helmet')
 
 const PORT = process.env.DEPLOY_PORT_NUMBER || 3000
 const db = process.env.MONGODB_URI
+
 const blogRouter = require('./routes/blogRouter')
 
 const whitelist = [
