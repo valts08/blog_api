@@ -45,13 +45,39 @@ const post_blog = (async (req, res, next) => {
         blog_title: req.body.blog_title,
         blog_content: req.body.blog_content,
         blog_preview: req.body.blog_preview,
-        time: Date.now()
+        created_time: Date.now()
     })
 
     await blog.save();
 
     res.send({blog, message: "Blog entry added successfully"})
     console.log('POST new blog')
+})
+
+const edit_blog = (async (req, res, next) => {
+
+    console.log(req.params, "params")
+    console.log(req.body, "body")
+    const blogId = req.params.id
+    const { error } = schema.validate(req.body)
+
+    if (error) {
+        console.log(error.details[0].message)
+        return res.send(error)
+    }
+    
+    const blogToChange = await Blog.findByIdAndUpdate(blogId, {
+        user_id: req.body.user_id,
+        blog_title: req.body.blog_title,
+        blog_content: req.body.blog_content,
+        blog_preview: req.body.blog_preview,
+        modified_time: Date.now()
+    })
+
+    await blogToChange.save()
+
+    console.log('blog ', blogId, ' edited')
+    res.send({ blog: blogToChange, message: "Blog successfully edited" })
 })
 
 // get blog by id
@@ -88,6 +114,7 @@ const delete_blog = (async (req, res, next) => {
 module.exports = {
     get_blog_user_id,
     post_blog,
+    edit_blog,
     get_blog_blog_id,
     get_blogs,
     delete_blog

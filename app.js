@@ -26,7 +26,7 @@ const corsOptions = {
         callback(null, false)
     }
   },
-    methods: ['GET', 'POST', 'DELETE'],
+    methods: ['GET', 'POST', 'DELETE', 'PUT'],
     credentials: true
 }
 

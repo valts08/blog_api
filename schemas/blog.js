@@ -6,7 +6,8 @@ const blogSchema = new Schema({
     blog_title: String,
     blog_preview: String,
     blog_content: String,
-    created_at_timestamp: { type: Number, default: Date.now }
+    created_time: { type: Number, default: Date.now },
+    modified_time: { type: Number, default: Date.now }
 });
 
 const Blog = mongoose.model('blog', blogSchema)
